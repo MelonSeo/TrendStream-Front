@@ -1,4 +1,4 @@
-interface NewsResponseDto {
+export interface NewsResponseDto {
   id: number;
   title: string;
   link: string;
@@ -10,14 +10,14 @@ interface NewsResponseDto {
   tags: string[];
 }
 
-interface AiResponse {
+export interface AiResponse {
   summary: string;      // AI가 생성한 3줄 요약
   sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL';
   keywords: string[];   // 추출된 키워드 (예: ["AI", "Spring"])
   score: number;        // 중요도 점수 (0-100)
 }
 
-interface Page<T> {
+export interface Page<T> {
   content: T[];
   pageable: {
     pageNumber: number;

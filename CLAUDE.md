@@ -5,11 +5,11 @@ IT 뉴스를 수집하고 AI로 분석한 결과를 보여주는 웹 서비스�
 백엔드(Spring Boot)에서 제공하는 REST API를 호출하여 뉴스 데이터를 표시합니다.
 
 ## 2. Tech Stack
-- **Framework**: Next.js 14+ (App Router)
+- **Framework**: Next.js 16+ (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **State Management**: TanStack Query (React Query)
-- **HTTP Client**: Axios 또는 Fetch API
+- **Styling**: Tailwind CSS 4
+- **State Management**: TanStack Query v5 (React Query)
+- **HTTP Client**: Fetch API
 - **Deployment**: Vercel
 
 ## 3. Backend API Reference
@@ -31,7 +31,7 @@ IT 뉴스를 수집하고 AI로 분석한 결과를 보여주는 웹 서비스�
 
 #### NewsResponseDto
 ```typescript
-interface NewsResponseDto {
+export interface NewsResponseDto {
   id: number;
   title: string;
   link: string;
@@ -43,7 +43,7 @@ interface NewsResponseDto {
   tags: string[];
 }
 
-interface AiResponse {
+export interface AiResponse {
   summary: string;      // AI가 생성한 3줄 요약
   sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL';
   keywords: string[];   // 추출된 키워드 (예: ["AI", "Spring"])
@@ -53,7 +53,7 @@ interface AiResponse {
 
 #### Page Response (Spring Data)
 ```typescript
-interface Page<T> {
+export interface Page<T> {
   content: T[];
   pageable: {
     pageNumber: number;
@@ -96,89 +96,106 @@ const response = await fetch('http://localhost:8081/api/news/1');
 const news: NewsResponseDto = await response.json();
 ```
 
-## 4. Page Structure (권장)
+## 4. Project Structure
 
 ```
-app/
-├── page.tsx                    # 홈 (최신 뉴스 목록)
-├── layout.tsx                  # 공통 레이아웃
-├── news/
-│   ├── [id]/
-│   │   └── page.tsx           # 뉴스 상세 페이지
-│   └── search/
-│       └── page.tsx           # 검색 결과 페이지
-├── popular/
-│   └── page.tsx               # 인기 뉴스 페이지
-└── components/
-    ├── NewsCard.tsx           # 뉴스 카드 컴포넌트
-    ├── NewsList.tsx           # 뉴스 목록 컴포넌트
-    ├── SearchBar.tsx          # 검색바
-    ├── Pagination.tsx         # 페이지네이션
-    ├── SentimentBadge.tsx     # 감정 분석 배지 (긍정/부정/중립)
-    └── ScoreBadge.tsx         # 중요도 점수 배지
+trendstream-frontend/
+├── app/
+│   ├── page.tsx                 # 홈 (최신 뉴스 목록)
+│   ├── layout.tsx               # 공통 레이아웃 (Nav + Footer)
+│   ├── globals.css              # 전역 스타일 + 애니메이션
+│   ├── providers.tsx            # TanStack Query Provider
+│   ├── api.ts                   # API 클라이언트 함수
+│   ├── types.ts                 # TypeScript 타입 정의
+│   ├── news/
+│   │   ├── [id]/
+│   │   │   └── page.tsx         # 뉴스 상세 페이지
+│   │   └── search/
+│   │       └── page.tsx         # 검색 결과 페이지
+│   └── popular/
+│       └── page.tsx             # 인기 뉴스 페이지
+├── components/
+│   ├── NewsCard.tsx             # 뉴스 카드 컴포넌트
+│   ├── NewsList.tsx             # 뉴스 목록 (그리드)
+│   ├── SearchBar.tsx            # 검색바 (애니메이션)
+│   ├── Pagination.tsx           # 페이지네이션
+│   ├── SentimentBadge.tsx       # 감정 분석 배지
+│   └── ScoreBadge.tsx           # 중요도 점수 배지
+├── .env.local                   # 환경 변수
+└── package.json
 ```
 
-## 5. UI/UX Guidelines
+## 5. Implemented Features
 
-### 5.1 핵심 기능
-- **뉴스 목록**: 카드 형태로 뉴스 표시 (제목, 요약, 키워드, 점수)
-- **검색**: 실시간 검색 또는 버튼 클릭 검색
-- **상세 보기**: 전체 내용 + AI 분석 결과 표시
-- **무한 스크롤** 또는 **페이지네이션** 선택
+### 5.1 페이지
+| 페이지 | 경로 | 기능 |
+|--------|------|------|
+| 홈 | `/` | 최신 뉴스 목록, 검색바, 페이지네이션 |
+| 검색 | `/news/search` | 키워드 검색, 결과 수 표시 |
+| 인기 뉴스 | `/popular` | AI 점수순 정렬 |
+| 상세 | `/news/[id]` | AI 분석 결과, 원문 링크 |
 
-### 5.2 표시할 정보
-| 컴포넌트 | 표시 항목 |
-|---------|----------|
-| 뉴스 카드 | 제목, 요약(summary), 키워드 태그, 점수, 발행일 |
-| 상세 페이지 | 전체 내용 + 원문 링크 + 감정 분석 + 키워드 |
-| 검색바 | 키워드 입력, 검색 버튼 |
+### 5.2 컴포넌트
+- **NewsCard**: 뉴스 타입 배지, 제목, AI 요약, 키워드 태그, 점수/감정 배지
+- **NewsList**: 반응형 그리드 (1/2/3열), 로딩 애니메이션
+- **SearchBar**: 포커스 애니메이션, 그라데이션 버튼
+- **Pagination**: 5페이지 단위 표시, 첫/마지막 페이지 이동
+- **SentimentBadge**: 아이콘 + 한글 라벨 (긍정/부정/중립)
+- **ScoreBadge**: HOT 뱃지 (80+), 점수별 그라데이션
 
-### 5.3 감정 분석 표시 (색상 가이드)
-- `POSITIVE`: 초록색 (#22c55e)
-- `NEGATIVE`: 빨간색 (#ef4444)
-- `NEUTRAL`: 회색 (#6b7280)
+### 5.3 UI/UX
+- Glass morphism 네비게이션
+- 카드 호버 효과 (translateY + shadow)
+- 로딩 스피너 애니메이션
+- 에러/빈 상태 UI
+- 반응형 디자인 (모바일 최적화)
+- Inter 폰트 적용
 
-### 5.4 점수 표시 (색상 가이드)
-- 80-100: 빨간색 (HOT)
-- 60-79: 주황색
-- 40-59: 노란색
-- 0-39: 회색
+## 6. Design System
 
-## 6. Environment Variables
+### 6.1 색상 가이드
+
+**감정 분석 (Sentiment)**
+| 상태 | 배경 | 텍스트 |
+|------|------|--------|
+| POSITIVE | `bg-emerald-50` | `text-emerald-700` |
+| NEGATIVE | `bg-red-50` | `text-red-700` |
+| NEUTRAL | `bg-slate-50` | `text-slate-600` |
+
+**점수 (Score)**
+| 범위 | 스타일 | 라벨 |
+|------|--------|------|
+| 80-100 | 빨강-주황 그라데이션 | HOT (펄스 애니메이션) |
+| 60-79 | 주황-노랑 그라데이션 | 점수 표시 |
+| 40-59 | `bg-amber-100` | 점수 표시 |
+| 0-39 | `bg-slate-100` | 점수 표시 |
+
+**뉴스 타입**
+| 타입 | 스타일 |
+|------|--------|
+| NEWS | `bg-blue-100 text-blue-700` |
+| BLOG | `bg-purple-100 text-purple-700` |
+| COMMUNITY | `bg-green-100 text-green-700` |
+
+### 6.2 애니메이션
+- `animate-fade-in`: 카드 등장 (opacity + translateY)
+- `animate-spin`: 로딩 스피너
+- `badge-hot`: HOT 배지 펄스 효과
+- `card-hover`: 카드 호버 (translateY -4px)
+
+## 7. Environment Variables
 
 ```env
-# .env.local
+# .env.local (개발)
 NEXT_PUBLIC_API_URL=http://localhost:8081
 
-# .env.production
+# .env.production (프로덕션)
 NEXT_PUBLIC_API_URL=https://your-backend-domain.com
-```
-
-## 7. CORS 설정 (백엔드)
-프론트엔드 개발 시 CORS 에러가 발생하면, 백엔드에 CORS 설정이 필요합니다.
-백엔드 담당자에게 요청하거나, 아래 경로의 파일을 수정하세요:
-
-**백엔드 저장소 경로**: `C:\Users\kyobin\Desktop\study\TrendStream`
-
-필요한 설정:
-```java
-@Configuration
-public class CorsConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3000") // Next.js 개발 서버
-                .allowedMethods("GET", "POST", "PUT", "DELETE");
-    }
-}
 ```
 
 ## 8. Development Commands
 
 ```bash
-# 프로젝트 생성
-npx create-next-app@latest trendstream-frontend --typescript --tailwind --app
-
 # 개발 서버 실행
 npm run dev
 
@@ -187,32 +204,93 @@ npm run build
 
 # 프로덕션 실행
 npm start
+
+# 린트
+npm run lint
 ```
 
-## 9. Deployment (Vercel)
+## 9. CORS 설정 (백엔드)
 
-1. GitHub에 프론트엔드 저장소 push
+프론트엔드 개발 시 CORS 에러가 발생하면 백엔드 설정 필요:
+
+```java
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE");
+    }
+}
+```
+
+## 10. Deployment (Vercel)
+
+1. GitHub에 push
 2. Vercel 연동 (https://vercel.com)
 3. Environment Variables 설정 (`NEXT_PUBLIC_API_URL`)
 4. 자동 배포 완료
 
-## 10. Related Resources
+## 11. Related Resources
 
 - **Swagger UI**: `http://localhost:8081/swagger-ui.html`
 - **API Docs (JSON)**: `http://localhost:8081/v3/api-docs`
 - **백엔드 저장소**: `C:\Users\kyobin\Desktop\study\TrendStream`
 - **백엔드 문서**: `TrendStream/CLAUDE.md`, `TrendStream/TROUBLESHOOTING.md`
 
-## 11. Development Progress
+## 12. Development Progress
 
-### Completed Tasks
-- [x] Next.js project initialized (TypeScript, Tailwind CSS, App Router)
-- [x] Environment variables set up (`.env.local`)
-- [x] Basic page structure and layout implemented
-- [x] Core components developed (`NewsCard`, `NewsList`, `SearchBar`, etc.)
-- [x] API integration with TanStack Query and Fetch
+### Completed (2026-02-04)
+- [x] Next.js 프로젝트 초기화 (TypeScript, Tailwind CSS, App Router)
+- [x] 환경 변수 설정 (`.env.local`)
+- [x] TypeScript 타입 정의 (`types.ts`)
+- [x] API 클라이언트 구현 (`api.ts`)
+- [x] TanStack Query Provider 설정
+- [x] 모든 페이지 구현 (홈, 검색, 인기, 상세)
+- [x] 모든 컴포넌트 구현 (NewsCard, NewsList, SearchBar, Pagination, 배지들)
+- [x] UI/UX 디자인 개선 (Glass morphism, 애니메이션, 반응형)
+- [x] 로딩/에러/빈 상태 UI
+- [x] Suspense boundary 적용 (Next.js 16 대응)
 
-### Remaining Tasks
-- [ ] Implement core features (news list, search, detail view, popular news)
-- [ ] Apply UI/UX guidelines (sentiment/score colors)
-- [ ] Implement pagination or infinite scroll
+## 13. Future Feature Ideas (검토용)
+
+### 13.1 사용자 경험 개선
+- [ ] **다크 모드**: 시스템 설정 연동 + 토글 버튼
+- [ ] **무한 스크롤**: 페이지네이션 대체 옵션 (Intersection Observer)
+- [ ] **스켈레톤 UI**: 로딩 중 레이아웃 미리보기
+- [ ] **키워드 자동완성**: 검색 시 인기 키워드 추천
+- [ ] **최근 검색어**: 로컬스토리지 저장 + 빠른 재검색
+
+### 13.2 기능 확장
+- [ ] **북마크/스크랩**: 관심 뉴스 저장 (로컬스토리지 또는 백엔드 연동)
+- [ ] **공유 기능**: 카카오톡, 트위터, 링크 복사
+- [ ] **카테고리 필터**: AI, 클라우드, 보안 등 카테고리별 필터링
+- [ ] **날짜 필터**: 특정 기간 뉴스 조회
+- [ ] **정렬 옵션**: 최신순/점수순/감정별 정렬
+
+### 13.3 분석 및 시각화
+- [ ] **트렌드 차트**: 키워드별 뉴스 수 추이 그래프
+- [ ] **워드 클라우드**: 인기 키워드 시각화
+- [ ] **감정 분석 통계**: 긍정/부정/중립 비율 파이차트
+- [ ] **뉴스 타임라인**: 시간순 뉴스 흐름 표시
+
+### 13.4 알림 및 구독
+- [ ] **키워드 알림**: 특정 키워드 뉴스 등록 시 알림 (웹 푸시)
+- [ ] **뉴스레터 구독**: 일간/주간 요약 이메일 발송
+- [ ] **RSS 피드**: 개인화된 뉴스 피드 제공
+
+### 13.5 성능 및 SEO
+- [ ] **SSR/ISR 적용**: 검색 엔진 최적화
+- [ ] **이미지 최적화**: next/image 활용
+- [ ] **PWA 지원**: 오프라인 접근, 앱 설치
+- [ ] **메타 태그 동적 생성**: 뉴스별 OG 이미지
+
+### 13.6 관리자 기능 (백엔드 연동 필요)
+- [ ] **대시보드**: 전체 뉴스 수, 수집 현황, 에러 로그
+- [ ] **수동 수집 트리거**: 특정 소스 즉시 수집
+- [ ] **AI 분석 재실행**: 특정 뉴스 재분석
+
+---
+
+**Note**: 추가 기능은 백엔드 API 지원 여부 확인 후 구현 가능합니다.
