@@ -17,6 +17,18 @@ export interface AiResponse {
   score: number;        // 중요도 점수 (0-100)
 }
 
+export interface TrendResponseDto {
+  keyword: string;
+  count: number;
+  relatedNews: NewsSummary[];
+}
+
+export interface NewsSummary {
+  id: number;
+  title: string;
+  link: string;
+}
+
 export interface Page<T> {
   content: T[];
   pageable: {

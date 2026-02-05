@@ -26,6 +26,7 @@ IT 뉴스를 수집하고 AI로 분석한 결과를 보여주는 웹 서비스�
 | GET | `/api/news/{id}` | 뉴스 상세 조회 | - |
 | GET | `/api/news/search` | 키워드 검색 | `keyword`, `page`, `size` |
 | GET | `/api/news/popular` | 인기 뉴스 (AI 점수순) | `page`, `size` |
+| GET | `/api/trends` | 트렌드 키워드 순위 | `period`, `limit` |
 
 ### 3.3 Response Types
 
@@ -48,6 +49,21 @@ export interface AiResponse {
   sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL';
   keywords: string[];   // 추출된 키워드 (예: ["AI", "Spring"])
   score: number;        // 중요도 점수 (0-100)
+}
+```
+
+#### TrendResponseDto
+```typescript
+export interface TrendResponseDto {
+  keyword: string;
+  count: number;
+  relatedNews: NewsSummary[];
+}
+
+export interface NewsSummary {
+  id: number;
+  title: string;
+  link: string;
 }
 ```
 
@@ -112,15 +128,18 @@ trendstream-frontend/
 │   │   │   └── page.tsx         # 뉴스 상세 페이지
 │   │   └── search/
 │   │       └── page.tsx         # 검색 결과 페이지
-│   └── popular/
-│       └── page.tsx             # 인기 뉴스 페이지
+│   ├── popular/
+│   │   └── page.tsx             # 인기 뉴스 페이지
+│   └── trends/
+│       └── page.tsx             # 트렌드 키워드 순위 페이지
 ├── components/
 │   ├── NewsCard.tsx             # 뉴스 카드 컴포넌트
 │   ├── NewsList.tsx             # 뉴스 목록 (그리드)
 │   ├── SearchBar.tsx            # 검색바 (애니메이션)
 │   ├── Pagination.tsx           # 페이지네이션
 │   ├── SentimentBadge.tsx       # 감정 분석 배지
-│   └── ScoreBadge.tsx           # 중요도 점수 배지
+│   ├── ScoreBadge.tsx           # 중요도 점수 배지
+│   └── TrendCard.tsx            # 트렌드 키워드 카드 (아코디언)
 ├── .env.local                   # 환경 변수
 └── package.json
 ```
@@ -133,6 +152,7 @@ trendstream-frontend/
 | 홈 | `/` | 최신 뉴스 목록, 검색바, 페이지네이션 |
 | 검색 | `/news/search` | 키워드 검색, 결과 수 표시 |
 | 인기 뉴스 | `/popular` | AI 점수순 정렬 |
+| 트렌드 | `/trends` | 키워드 순위, 기간별 필터, 관련 뉴스 |
 | 상세 | `/news/[id]` | AI 분석 결과, 원문 링크 |
 
 ### 5.2 컴포넌트
@@ -142,6 +162,7 @@ trendstream-frontend/
 - **Pagination**: 5페이지 단위 표시, 첫/마지막 페이지 이동
 - **SentimentBadge**: 아이콘 + 한글 라벨 (긍정/부정/중립)
 - **ScoreBadge**: HOT 뱃지 (80+), 점수별 그라데이션
+- **TrendCard**: 순위 배지 (1~3위 강조), 언급 횟수 바, 관련 뉴스 아코디언
 
 ### 5.3 UI/UX
 - Glass morphism 네비게이션
@@ -252,6 +273,7 @@ public class CorsConfig implements WebMvcConfigurer {
 - [x] UI/UX 디자인 개선 (Glass morphism, 애니메이션, 반응형)
 - [x] 로딩/에러/빈 상태 UI
 - [x] Suspense boundary 적용 (Next.js 16 대응)
+- [x] 트렌드 페이지 구현 (기간별 키워드 순위, 관련 뉴스 아코디언)
 
 ## 13. Future Feature Ideas (검토용)
 

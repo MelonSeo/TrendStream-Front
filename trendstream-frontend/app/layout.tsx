@@ -57,6 +57,15 @@ export default function RootLayout({
                     <span className="hidden sm:inline">Popular</span>
                   </Link>
                   <Link
+                    href="/trends"
+                    className="px-4 py-2 rounded-xl text-slate-600 hover:text-purple-600 hover:bg-purple-50 font-medium transition-all duration-200 flex items-center gap-1.5"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    <span className="hidden sm:inline">Trends</span>
+                  </Link>
+                  <Link
                     href="/news/search"
                     className="px-4 py-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 font-medium transition-all duration-200 flex items-center gap-1.5"
                   >
@@ -100,6 +109,7 @@ export default function RootLayout({
                   <ul className="space-y-3">
                     <li><Link href="/" className="text-slate-500 hover:text-blue-600 text-sm transition-colors">Latest News</Link></li>
                     <li><Link href="/popular" className="text-slate-500 hover:text-blue-600 text-sm transition-colors">Popular</Link></li>
+                    <li><Link href="/trends" className="text-slate-500 hover:text-purple-600 text-sm transition-colors">Trends</Link></li>
                     <li><Link href="/news/search" className="text-slate-500 hover:text-blue-600 text-sm transition-colors">Search</Link></li>
                   </ul>
                 </div>
