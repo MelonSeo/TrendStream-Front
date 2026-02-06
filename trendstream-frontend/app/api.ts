@@ -27,6 +27,10 @@ export const getPopularNews = (page: number = 0, size: number = 10): Promise<Pag
   return fetcher(`/api/news/popular?page=${page}&size=${size}`);
 };
 
+export const searchByTag = (tagName: string, page: number = 0, size: number = 10): Promise<Page<NewsResponseDto>> => {
+  return fetcher(`/api/news/tag?name=${encodeURIComponent(tagName)}&page=${page}&size=${size}`);
+};
+
 export const getTrends = (period: string = '24h', limit: number = 10): Promise<TrendResponseDto[]> => {
   return fetcher(`/api/trends?period=${period}&limit=${limit}`);
 };

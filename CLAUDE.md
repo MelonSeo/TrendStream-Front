@@ -24,7 +24,8 @@ IT 뉴스를 수집하고 AI로 분석한 결과를 보여주는 웹 서비스�
 |--------|------|-------------|--------------|
 | GET | `/api/news` | 최신 뉴스 목록 | `page`, `size` |
 | GET | `/api/news/{id}` | 뉴스 상세 조회 | - |
-| GET | `/api/news/search` | 키워드 검색 | `keyword`, `page`, `size` |
+| GET | `/api/news/search` | 키워드 검색 (제목+설명+AI요약) | `keyword`, `page`, `size` |
+| GET | `/api/news/tag` | 태그 검색 (정확 매칭) | `name`, `page`, `size` |
 | GET | `/api/news/popular` | 인기 뉴스 (AI 점수순) | `page`, `size` |
 | GET | `/api/trends` | 트렌드 키워드 순위 | `period`, `limit` |
 
@@ -126,8 +127,10 @@ trendstream-frontend/
 │   ├── news/
 │   │   ├── [id]/
 │   │   │   └── page.tsx         # 뉴스 상세 페이지
-│   │   └── search/
-│   │       └── page.tsx         # 검색 결과 페이지
+│   │   ├── search/
+│   │   │   └── page.tsx         # 검색 결과 페이지
+│   │   └── tag/
+│   │       └── page.tsx         # 태그 검색 결과 페이지
 │   ├── popular/
 │   │   └── page.tsx             # 인기 뉴스 페이지
 │   └── trends/
@@ -150,13 +153,14 @@ trendstream-frontend/
 | 페이지 | 경로 | 기능 |
 |--------|------|------|
 | 홈 | `/` | 최신 뉴스 목록, 검색바, 페이지네이션 |
-| 검색 | `/news/search` | 키워드 검색, 결과 수 표시 |
+| 검색 | `/news/search` | 키워드 검색 (제목+설명+AI요약), 결과 수 표시 |
+| 태그 검색 | `/news/tag` | 태그(키워드) 기반 검색, 정확 매칭 |
 | 인기 뉴스 | `/popular` | AI 점수순 정렬 |
 | 트렌드 | `/trends` | 키워드 순위, 기간별 필터, 관련 뉴스 |
 | 상세 | `/news/[id]` | AI 분석 결과, 원문 링크 |
 
 ### 5.2 컴포넌트
-- **NewsCard**: 뉴스 타입 배지, 제목, AI 요약, 키워드 태그, 점수/감정 배지
+- **NewsCard**: 뉴스 타입 배지, 제목, AI 요약, 클릭 가능한 키워드 태그, 점수/감정 배지, 분석 중 상태 표시
 - **NewsList**: 반응형 그리드 (1/2/3열), 로딩 애니메이션
 - **SearchBar**: 포커스 애니메이션, 그라데이션 버튼
 - **Pagination**: 5페이지 단위 표시, 첫/마지막 페이지 이동

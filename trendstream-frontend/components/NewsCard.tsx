@@ -26,7 +26,14 @@ export default function NewsCard({ news }: { news: NewsResponseDto }) {
             </span>
             <span className="text-slate-400 text-xs">{formattedDate}</span>
           </div>
-          {news.aiResult && <ScoreBadge score={news.aiResult.score} />}
+          {news.aiResult ? (
+            <ScoreBadge score={news.aiResult.score} />
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-600 text-xs font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+              분석 중
+            </span>
+          )}
         </div>
 
         {/* Title */}
@@ -40,9 +47,13 @@ export default function NewsCard({ news }: { news: NewsResponseDto }) {
         </h2>
 
         {/* Summary */}
-        {news.aiResult && (
+        {news.aiResult ? (
           <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-4">
             {news.aiResult.summary}
+          </p>
+        ) : (
+          <p className="text-slate-400 text-sm leading-relaxed line-clamp-3 mb-4 italic">
+            AI가 뉴스를 분석하고 있습니다...
           </p>
         )}
       </div>
@@ -53,13 +64,24 @@ export default function NewsCard({ news }: { news: NewsResponseDto }) {
         <div className="flex items-center justify-between gap-3">
           <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
             {news.aiResult?.keywords?.slice(0, 3).map((keyword, index) => (
-              <span
+              <Link
                 key={index}
-                className="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-medium truncate"
+                href={`/news/tag?name=${encodeURIComponent(keyword.toLowerCase())}`}
+                className="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-medium truncate hover:bg-purple-100 hover:text-purple-700 transition-colors"
               >
                 {keyword}
-              </span>
+              </Link>
             ))}
+            {!news.aiResult && (
+              <>
+                <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-400 text-xs">
+                  <span className="w-12 h-3 bg-slate-200 rounded animate-pulse"></span>
+                </span>
+                <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-400 text-xs">
+                  <span className="w-10 h-3 bg-slate-200 rounded animate-pulse"></span>
+                </span>
+              </>
+            )}
           </div>
           {news.aiResult && <SentimentBadge sentiment={news.aiResult.sentiment} />}
         </div>
