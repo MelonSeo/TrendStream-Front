@@ -209,7 +209,7 @@ npm start
 npm run lint
 ```
 
-## 9. CORS 설정 (백엔드)
+## 9-1. CORS 설정 (백엔드)
 
 프론트엔드 개발 시 CORS 에러가 발생하면 백엔드 설정 필요:
 
@@ -224,6 +224,16 @@ public class CorsConfig implements WebMvcConfigurer {
     }
 }
 ```
+
+## 9-2. Troubleshooting 기록 규칙
+
+개발 중 발생하는 모든 문제와 해결 과정은 **`TROUBLESHOOTING.md`** 에 기록한다.
+
+각 항목에는 다음을 포함할 것:
+- **증상**: 에러 메시지 또는 문제 상황
+- **원인 분석**: 왜 발생했는지 개념 수준에서 설명
+- **해결 방법**: 실제 변경한 코드와 설정
+- **핵심 개념**: 학습할 수 있는 포인트 정리
 
 ## 10. Deployment (Vercel)
 

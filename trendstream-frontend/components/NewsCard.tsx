@@ -52,7 +52,7 @@ export default function NewsCard({ news }: { news: NewsResponseDto }) {
         {/* Keywords */}
         <div className="flex items-center justify-between gap-3">
           <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
-            {news.aiResult?.keywords.slice(0, 3).map((keyword, index) => (
+            {news.aiResult?.keywords?.slice(0, 3).map((keyword, index) => (
               <span
                 key={index}
                 className="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-medium truncate"

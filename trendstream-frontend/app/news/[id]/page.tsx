@@ -153,7 +153,7 @@ export default function NewsDetailPage() {
                 주요 키워드
               </h3>
               <div className="flex flex-wrap gap-2">
-                {news.aiResult.keywords.map((keyword, index) => (
+                {news.aiResult.keywords?.map((keyword, index) => (
                   <span
                     key={index}
                     className="inline-flex items-center px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-medium shadow-sm"
