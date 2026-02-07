@@ -52,3 +52,48 @@ export interface Page<T> {
   numberOfElements: number;
   empty: boolean;
 }
+
+// Stats Types
+export interface SourceStats {
+  source: string;
+  count: number;
+}
+
+export interface HourlyStats {
+  hour: number;
+  count: number;
+}
+
+export interface DailyStats {
+  date: string; // "2026-02-07"
+  count: number;
+}
+
+export interface Dashboard {
+  totalToday: number;
+  totalWeek: number;
+  sourceStats: SourceStats[];
+  hourlyStats: HourlyStats[];
+  dailyStats: DailyStats[];
+}
+
+// Subscription Types
+export interface SubscriptionCreateRequest {
+  email: string;
+  name: string;
+  keyword: string;
+}
+
+export interface SubscriptionResponse {
+  id: number;
+  keyword: string;
+  createdAt: string;
+  lastNotifiedAt: string | null;
+}
+
+export interface UserSubscriptions {
+  email: string;
+  name: string;
+  notificationEnabled: boolean;
+  subscriptions: SubscriptionResponse[];
+}
